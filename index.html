@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tiến Mò Dashboard V2</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2a; --panel2:#112338; --line:rgba(255,255,255,.08);
+  --text:#f8fafc; --muted:#93a4b8; --blue:#49a7ff; --green:#3ddc97; --amber:#ffbe55;
+  --pink:#ff6bb5; --violet:#9b87f5; --shadow:0 20px 60px rgba(0,0,0,.28); --r:22px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+ radial-gradient(circle at 15% -10%,rgba(73,167,255,.20),transparent 30%),
+ radial-gradient(circle at 90% 0%,rgba(155,135,245,.15),transparent 25%),
+ linear-gradient(180deg,#06101c,#091522 55%,#07111f); color:var(--text); min-height:100vh}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh;background:rgba(5,14,25,.72);backdrop-filter:blur(18px)}
+.brand{font-size:20px;font-weight:850;margin-bottom:4px}
+.brand-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.nav{display:flex;flex-direction:column;gap:8px}
+.nav button{all:unset;cursor:pointer;padding:12px 14px;border-radius:14px;color:#b8c5d4;font-size:14px;font-weight:700}
+.nav button.active,.nav button:hover{background:rgba(73,167,255,.10);color:#fff}
+.side-card{margin-top:24px;padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)}
+.side-card .k{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#7fa8cb}
+.side-card .v{font-size:24px;font-weight:850;margin-top:8px}
+.side-card .s{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.main{padding:24px;max-width:1500px;width:100%;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
+.title h1{margin:0;font-size:30px}.title p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.045);color:#eaf1f8;padding:10px 13px;border-radius:13px;font-weight:750;cursor:pointer}
+.btn:hover{background:rgba(255,255,255,.075)} .btn.primary{background:linear-gradient(135deg,#3289ff,#23c9a3);border:none}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.span12{grid-column:span 12}.span8{grid-column:span 8}.span6{grid-column:span 6}.span4{grid-column:span 4}.span3{grid-column:span 3}
+.kpi .label{font-size:12px;color:var(--muted);margin-bottom:10px}.kpi .value{font-size:30px;font-weight:900}.kpi .delta{font-size:12px;color:#b7c4d2;margin-top:6px}
+.section-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}.section-head h2{margin:0;font-size:19px}
+.badge{font-size:11px;font-weight:800;padding:7px 10px;border-radius:999px;background:rgba(73,167,255,.12);color:#9ccfff;border:1px solid rgba(73,167,255,.18)}
+.badge.green{background:rgba(61,220,151,.11);color:#85f1c2;border-color:rgba(61,220,151,.18)}
+.badge.amber{background:rgba(255,190,85,.10);color:#ffd490;border-color:rgba(255,190,85,.18)}
+.field-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.field{padding:11px 12px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025)}
+.field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#7f93a8;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;border:none;outline:none;background:transparent;color:#fff;font-size:15px;font-weight:750}
+.field textarea{min-height:90px;resize:vertical;font-weight:550}
+.progress{height:9px;border-radius:99px;background:rgba(255,255,255,.065);overflow:hidden;margin-top:12px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:99px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.stat{border:1px solid var(--line);border-radius:15px;padding:13px;background:rgba(255,255,255,.02)}
+.stat .l{font-size:11px;color:var(--muted);margin-bottom:6px}.stat .v{font-size:22px;font-weight:850}
+canvas{width:100%;height:260px;display:block;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.018),transparent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:11px 9px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
+th{color:#88b8e6;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+td{color:#dce6ef} tr:last-child td{border-bottom:none}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.col{border:1px solid var(--line);border-radius:17px;padding:12px;min-height:250px;background:rgba(255,255,255,.02)}
+.col h3{font-size:14px;margin:3px 3px 12px}.drop{min-height:190px;display:flex;flex-direction:column;gap:9px}
+.task{cursor:grab;border:1px solid var(--line);border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025))}
+.task strong{display:block;font-size:13px}.task span{display:block;color:var(--muted);font-size:11px;margin-top:4px;line-height:1.4}
+.daily-form{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.check{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.02);font-size:13px;color:#dbe6ef}
+.note{font-size:12px;color:var(--muted);line-height:1.55}
+.bigquote{font-size:24px;font-weight:850;line-height:1.45;max-width:900px}
+.hero{padding:26px;background:
+ linear-gradient(120deg,rgba(73,167,255,.12),rgba(61,220,151,.05) 45%,rgba(155,135,245,.10));
+ border:1px solid var(--line);border-radius:26px;margin-bottom:16px}
+.hero .eyebrow{font-size:11px;color:#8fc4f5;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+.hero h2{font-size:32px;margin:8px 0 8px}.hero p{margin:0;color:#bdc9d7;max-width:900px;line-height:1.55}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}.nav{flex-direction:row;overflow:auto}.side-card{display:none}.span8,.span6,.span4{grid-column:span 12}.span3{grid-column:span 6}.field-grid,.daily-form{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.main{padding:14px}.span3{grid-column:span 12}.topbar{align-items:flex-start;flex-direction:column}.field-grid,.daily-form,.stats,.board,.checklist,.split{grid-template-columns:1fr}.hero h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">Tiến Mò Dashboard</div>
+  <div class="brand-sub">V2 • Personal Business OS</div>
+  <nav class="nav">
+    <button class="active" data-page="overview">Tổng quan</button>
+    <button data-page="affiliate">Affiliate</button>
+    <button data-page="dropship">Dropship</button>
+    <button data-page="house">Quỹ nhà</button>
+    <button data-page="daily">Daily Log</button>
+    <button data-page="focus">Focus Board</button>
+  </nav>
+  <div class="side-card">
+    <div class="k">North Star</div>
+    <div class="v">Đà Nẵng</div>
+    <div class="s">Gia đình • dòng tiền online • team nhỏ • tự do địa điểm • tài sản dài hạn</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="title">
+      <h1 id="pageTitle">Tổng quan</h1>
+      <p>Cập nhật số liệu, theo dõi tiến độ và giữ đúng hướng mỗi ngày.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="exportBtn">Xuất backup</button>
+      <label class="btn">Nhập backup<input id="importInput" type="file" accept=".json" hidden></label>
+      <button class="btn primary" id="saveBtn">Lưu dữ liệu</button>
+    </div>
+  </div>
+
+  <section class="page active" id="overview">
+    <div class="hero">
+      <div class="eyebrow">North Star 2026 → 2031</div>
+      <h2>Xây dòng tiền online để mua lại thời gian và tự do.</h2>
+      <p>Affiliate tạo cash flow. Dropship xây business sở hữu. Lợi nhuận chuyển dần thành quỹ tài sản để tiến tới mục tiêu nhà 5–6 tỷ tại Đà Nẵng.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card kpi span3"><div class="label">Affiliate hiện tại</div><div class="value" id="ovAff">17.5M</div><div class="delta">Target gần: 50M / tháng</div></div>
+      <div class="card kpi span3"><div class="label">Dropship target hiện tại</div><div class="value" id="ovDrop">1 đơn/ngày</div><div class="delta">AOV dự kiến: $90</div></div>
+      <div class="card kpi span3"><div class="label">Quỹ nhà mục tiêu</div><div class="value" id="ovHouse">5.5B</div><div class="delta">Khung thời gian: 5 năm</div></div>
+      <div class="card kpi span3"><div class="label">Focus split</div><div class="value">70 / 30</div><div class="delta">Affiliate / Dropship</div></div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>Business trajectory</h2><span class="badge green">Projection</span></div>
+        <canvas id="overviewChart" width="900" height="280"></canvas>
+        <div class="note">Biểu đồ dựa trên các checkpoint mục tiêu, không phải dự báo đảm bảo.</div>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Mục tiêu tháng</h2><span class="badge">Editable</span></div>
+        <div class="field-grid" style="grid-template-columns:1fr;">
+          <div class="field"><label>Affiliate hiện tại (VND)</label><input id="affCurrent" type="number" value="17500000"></div>
+          <div class="field"><label>Affiliate target (VND)</label><input id="affTarget" type="number" value="50000000"></div>
+          <div class="field"><label>Nhà mục tiêu (VND)</label><input id="houseGoal" type="number" value="5500000000"></div>
+          <div class="field"><label>Số năm</label><input id="houseYears" type="number" value="5"></div>
+        </div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>Con số cần bám</h2><span class="badge amber">Daily clarity</span></div>
+        <div class="stats">
+          <div class="stat"><div class="l">Affiliate target / ngày</div><div class="v" id="ovAffDaily">1.67M</div></div>
+          <div class="stat"><div class="l">Quỹ nhà cần / tháng</div><div class="v" id="ovHouseMonth">91.7M</div></div>
+          <div class="stat"><div class="l">Quỹ nhà cần / ngày</div><div class="v" id="ovHouseDay">3.06M</div></div>
+          <div class="stat"><div class="l">Content target / ngày</div><div class="v" id="ovContent">10</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="affiliate">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>Affiliate Engine</h2><span class="badge green">Cash Flow</span></div>
+        <div class="field-grid">
+          <div class="field"><label>Thu nhập hiện tại</label><input id="affCurrent2" type="number" value="17500000"></div>
+          <div class="field"><label>Target / tháng</label><input id="affTarget2" type="number" value="50000000"></div>
+          <div class="field"><label>Content / ngày</label><input id="contentPerDay" type="number" value="10"></div>
+          <div class="field"><label>Ngày hoạt động / tháng</label><input id="activeDays" type="number" value="30"></div>
+        </div>
+        <div class="progress"><div id="affProgress"></div></div>
+        <div class="stats">
+          <div class="stat"><div class="l">Tiến độ</div><div class="v" id="affPct">35%</div></div>
+          <div class="stat"><div class="l">Hiện tại / content</div><div class="v" id="affPerContent">58k</div></div>
+          <div class="stat"><div class="l">Target / content</div><div class="v" id="affNeedContent">167k</div></div>
+          <div class="stat"><div class="l">Target / ngày</div><div class="v" id="affNeedDay">1.67M</div></div>
+        </div>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>Checkpoint scale</h2><span class="badge">30M → 50M → 75M → 100M</span></div>
+        <canvas id="affChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Content Mix</h2><span class="badge amber">10 video/ngày</span></div>
+        <table><tbody>
+          <tr><td>Proven</td><td><strong>60%</strong></td><td>6 video</td></tr>
+          <tr><td>Variation</td><td><strong>30%</strong></td><td>3 video</td></tr>
+          <tr><td>Experiment</td><td><strong>10%</strong></td><td>1 video</td></tr>
+        </tbody></table>
+        <div class="note" style="margin-top:12px;">Không scale chỉ bằng số lượng. Ưu tiên tăng commission/content và nhân bản format thắng.</div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>KPI theo dõi mỗi video</h2><span class="badge green">Money first</span></div>
+        <table>
+          <thead><tr><th>Video</th><th>Views</th><th>Clicks</th><th>Đơn</th><th>Hoa hồng</th><th>Commission / 1K views</th></tr></thead>
+          <tbody>
+            <tr><td>Format thắng A</td><td>100,000</td><td>—</td><td>—</td><td>1.8M</td><td>18K</td></tr>
+            <tr><td>Format thắng B</td><td>20,000</td><td>—</td><td>—</td><td>1.2M</td><td>60K</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="dropship">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>Dropship Ramp</h2><span class="badge green">Future Bet</span></div>
+        <div class="field-grid">
+          <div class="field"><label>AOV (USD)</label><input id="aov" type="number" value="90"></div>
+          <div class="field"><label>USD/VND</label><input id="fx" type="number" value="25976"></div>
+          <div class="field"><label>Net margin (%)</label><input id="margin" type="number" value="20"></div>
+          <div class="field"><label>Target hiện tại (đơn/ngày)</label><input id="dropTarget" type="number" value="1"></div>
+        </div>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>Revenue ramp</h2><span class="badge">1 → 2 → 3 → 5 → 10 đơn/ngày</span></div>
+        <canvas id="dropChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Target hiện tại</h2><span class="badge amber">Profit-aware</span></div>
+        <div class="stats" style="grid-template-columns:1fr 1fr;">
+          <div class="stat"><div class="l">Revenue / tháng</div><div class="v" id="dropRev">70M</div></div>
+          <div class="stat"><div class="l">Profit / tháng</div><div class="v" id="dropProfit">14M</div></div>
+        </div>
+        <div class="note" style="margin-top:12px;">Scale đơn chỉ khi economics vẫn có lợi nhuận.</div>
+      </div>
+
+      <div class="card span12">
+        <table>
+          <thead><tr><th>Stage</th><th>Đơn/ngày</th><th>Revenue/tháng</th><th>Profit ước tính</th></tr></thead>
+          <tbody id="dropTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="house">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>House Fund</h2><span class="badge green">Asset Goal</span></div>
+        <div class="field-grid">
+          <div class="field"><label>Mục tiêu nhà</label><input id="houseGoal2" type="number" value="5500000000"></div>
+          <div class="field"><label>Thời gian (năm)</label><input id="houseYears2" type="number" value="5"></div>
+          <div class="field"><label>Quỹ đã có</label><input id="houseSaved" type="number" value="0"></div>
+          <div class="field"><label>Đóng góp / tháng</label><input id="houseMonthlyActual" type="number" value="0"></div>
+        </div>
+        <div class="progress"><div id="houseProgress"></div></div>
+        <div class="stats">
+          <div class="stat"><div class="l">Đã hoàn thành</div><div class="v" id="housePct">0%</div></div>
+          <div class="stat"><div class="l">Còn thiếu</div><div class="v" id="houseRemain">5.5B</div></div>
+          <div class="stat"><div class="l">Cần / tháng</div><div class="v" id="houseNeedMonth">91.7M</div></div>
+          <div class="stat"><div class="l">Cần / ngày</div><div class="v" id="houseNeedDay">3.06M</div></div>
+        </div>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>Tiến độ quỹ nhà</h2><span class="badge">Linear target</span></div>
+        <canvas id="houseChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Mốc tham khảo</h2><span class="badge amber">5–6 tỷ</span></div>
+        <table>
+          <thead><tr><th>Thời gian</th><th>5B</th><th>6B</th></tr></thead>
+          <tbody>
+            <tr><td>3 năm</td><td>138.9M</td><td>166.7M</td></tr>
+            <tr><td>4 năm</td><td>104.2M</td><td>125.0M</td></tr>
+            <tr><td>5 năm</td><td>83.3M</td><td>100.0M</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="daily">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>Daily Log</h2><span class="badge green">Nhập mỗi ngày</span></div>
+        <div class="daily-form">
+          <div class="field"><label>Ngày</label><input id="logDate" type="date"></div>
+          <div class="field"><label>Content</label><input id="logContent" type="number" value="0"></div>
+          <div class="field"><label>Affiliate commission</label><input id="logAff" type="number" value="0"></div>
+          <div class="field"><label>Dropship orders</label><input id="logOrders" type="number" value="0"></div>
+          <div class="field"><label>Revenue dropship</label><input id="logRev" type="number" value="0"></div>
+          <div class="field"><label>Profit dropship</label><input id="logProfit" type="number" value="0"></div>
+        </div>
+        <button class="btn primary" id="addLog" style="margin-top:12px;">Thêm vào nhật ký</button>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>30 ngày gần nhất</h2><span class="badge">Trend</span></div>
+        <canvas id="dailyChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Checklist hôm nay</h2><span class="badge amber">Execution</span></div>
+        <div class="checklist" style="grid-template-columns:1fr;">
+          <label class="check"><input type="checkbox" data-check="1"> Đủ content theo plan</label>
+          <label class="check"><input type="checkbox" data-check="2"> Review 3 content tốt nhất</label>
+          <label class="check"><input type="checkbox" data-check="3"> Test 1 hook mới</label>
+          <label class="check"><input type="checkbox" data-check="4"> Test 1 biến dropship</label>
+          <label class="check"><input type="checkbox" data-check="5"> Ghi 1 insight / bài học</label>
+          <label class="check"><input type="checkbox" data-check="6"> Kiểm tra cash flow</label>
+        </div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>Nhật ký</h2><button class="btn" id="clearLogs">Xóa log</button></div>
+        <table>
+          <thead><tr><th>Ngày</th><th>Content</th><th>Affiliate</th><th>Orders</th><th>DS Revenue</th><th>DS Profit</th></tr></thead>
+          <tbody id="logTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="focus">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>Focus Board kéo‑thả</h2><span class="badge green">Priorities</span></div>
+        <div class="board">
+          <div class="col"><h3>🔥 Làm ngay</h3><div class="drop" id="now"></div></div>
+          <div class="col"><h3>🛠 Build dần</h3><div class="drop" id="build"></div></div>
+          <div class="col"><h3>⏳ Làm sau</h3><div class="drop" id="later"></div></div>
+        </div>
+      </div>
+      <div class="card span6">
+        <div class="section-head"><h2>Weekly Focus</h2><span class="badge">Notes</span></div>
+        <div class="field"><label>Điểm tập trung tuần này</label><textarea id="weeklyFocus">Scale 2 sản phẩm affiliate đang có tín hiệu tốt và test đều creative cho dropship.</textarea></div>
+      </div>
+      <div class="card span6">
+        <div class="section-head"><h2>Decision Rule</h2><span class="badge amber">Keep direction</span></div>
+        <div class="field"><label>Nguyên tắc</label><textarea id="decisionRule">Cơ hội nào không giúp tăng cash flow, tăng tài sản hoặc tăng tự do thời gian thì chưa ưu tiên.</textarea></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>{n=+n||0; let a=Math.abs(n); if(a>=1e9)return (n/1e9).toFixed(a>=1e10?0:1)+"B"; if(a>=1e6)return (n/1e6).toFixed(a>=1e7?0:1)+"M"; if(a>=1e3)return Math.round(n/1e3)+"K"; return Math.round(n).toString()};
+const usd=n=>"$"+Math.round(n).toLocaleString("en-US");
+const ids=["affCurrent","affTarget","houseGoal","houseYears","affCurrent2","affTarget2","contentPerDay","activeDays","aov","fx","margin","dropTarget","houseGoal2","houseYears2","houseSaved","houseMonthlyActual","weeklyFocus","decisionRule"];
+
+function syncPairs(src,dst){ if($(src)&&$(dst)) $(dst).value=$(src).value }
+function saveAll(){
+  ids.forEach(id=>localStorage.setItem("tmv2_"+id,$(id).value));
+  saveChecks(); saveBoard(); localStorage.setItem("tmv2_logs",JSON.stringify(logs));
+  flash("Đã lưu dữ liệu");
+}
+function loadAll(){
+  ids.forEach(id=>{let v=localStorage.getItem("tmv2_"+id); if(v!==null)$(id).value=v});
+  loadChecks(); loadBoard(); logs=JSON.parse(localStorage.getItem("tmv2_logs")||"[]");
+}
+
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(b.dataset.page).classList.add("active");
+  $("pageTitle").textContent=b.textContent;
+  redraw();
+});
+
+function drawLine(canvas,labels,series,opts={}){
+  const c=canvas,ctx=c.getContext("2d"),W=c.width,H=c.height,pad=42;
+  ctx.clearRect(0,0,W,H);
+  let vals=series.flatMap(s=>s.data),max=Math.max(1,...vals),min=Math.min(0,...vals);
+  ctx.strokeStyle="rgba(255,255,255,.08)"; ctx.lineWidth=1;
+  for(let i=0;i<5;i++){let y=pad+(H-pad*2)*i/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke()}
+  series.forEach((s,si)=>{
+    ctx.beginPath(); ctx.lineWidth=3; ctx.strokeStyle=s.color; ctx.fillStyle=s.color;
+    s.data.forEach((v,i)=>{
+      let x=pad+(W-pad*2)*(labels.length===1?0:i/(labels.length-1));
+      let y=H-pad-(v-min)/(max-min||1)*(H-pad*2);
+      if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.beginPath();
+      if(i===0)ctx.moveTo(x,y); else {
+        let px=pad+(W-pad*2)*((i-1)/(labels.length-1)),pv=s.data[i-1],py=H-pad-(pv-min)/(max-min||1)*(H-pad*2);
+        ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();
+      }
+    })
+  });
+  ctx.fillStyle="#8fa4b7";ctx.font="11px sans-serif";ctx.textAlign="center";
+  labels.forEach((l,i)=>{let x=pad+(W-pad*2)*(labels.length===1?0:i/(labels.length-1));ctx.fillText(l,x,H-14)});
+}
+function flash(t){$("saveBtn").textContent=t;setTimeout(()=>$("saveBtn").textContent="Lưu dữ liệu",1100)}
+
+let logs=[];
+function update(){
+  syncPairs("affCurrent","affCurrent2"); syncPairs("affTarget","affTarget2"); syncPairs("houseGoal","houseGoal2"); syncPairs("houseYears","houseYears2");
+  const ac=+$("affCurrent").value||0,at=+$("affTarget").value||1,c=+$("contentPerDay").value||10,d=+$("activeDays").value||30;
+  const hg=+$("houseGoal").value||0,hy=+$("houseYears").value||1;
+  const aov=+$("aov").value||90,fx=+$("fx").value||25976,margin=(+$("margin").value||20)/100,dt=+$("dropTarget").value||1;
+  $("ovAff").textContent=fmt(ac); $("ovHouse").textContent=fmt(hg); $("ovDrop").textContent=dt+" đơn/ngày"; $("ovContent").textContent=c;
+  $("ovAffDaily").textContent=fmt(at/30); $("ovHouseMonth").textContent=fmt(hg/(hy*12)); $("ovHouseDay").textContent=fmt(hg/(hy*365));
+  let p=Math.min(100,ac/at*100); $("affProgress").style.width=p+"%"; $("affPct").textContent=p.toFixed(0)+"%";
+  $("affPerContent").textContent=fmt(ac/(c*d)); $("affNeedContent").textContent=fmt(at/(c*d)); $("affNeedDay").textContent=fmt(at/d);
+  let rev=dt*30*aov*fx,profit=rev*margin; $("dropRev").textContent=fmt(rev); $("dropProfit").textContent=fmt(profit);
+
+  const stages=[1,2,3,5,10],tbody=$("dropTable");tbody.innerHTML="";
+  stages.forEach((x,i)=>{let r=x*30*aov*fx,pf=r*margin;tbody.innerHTML+=`<tr><td>${["Month 1","Month 2","Month 3","Next target","Scale target"][i]}</td><td>${x}</td><td>${usd(x*30*aov)} (≈ ${fmt(r)})</td><td>${fmt(pf)}</td></tr>`});
+
+  const hs=+$("houseSaved").value||0,hg2=+$("houseGoal2").value||hg,hy2=+$("houseYears2").value||hy;
+  let hp=Math.min(100,hs/hg2*100);$("houseProgress").style.width=hp+"%";$("housePct").textContent=hp.toFixed(1)+"%";$("houseRemain").textContent=fmt(Math.max(0,hg2-hs));
+  $("houseNeedMonth").textContent=fmt(Math.max(0,hg2-hs)/(hy2*12));$("houseNeedDay").textContent=fmt(Math.max(0,hg2-hs)/(hy2*365));
+  renderLogs(); redraw();
+}
+function redraw(){
+  drawLine($("overviewChart"),["Hiện tại","30M","50M","75M","100M"],[{data:[+$("affCurrent").value||0,30e6,50e6,75e6,100e6],color:"#49a7ff"}]);
+  drawLine($("affChart"),["Now","30M","50M","75M","100M"],[{data:[+$("affCurrent").value||0,30e6,50e6,75e6,100e6],color:"#3ddc97"}]);
+  const aov=+$("aov").value||90,fx=+$("fx").value||25976;drawLine($("dropChart"),["1/day","2/day","3/day","5/day","10/day"],[{data:[1,2,3,5,10].map(x=>x*30*aov*fx),color:"#ff6bb5"}]);
+  const hg=+$("houseGoal2").value||5.5e9,years=+$("houseYears2").value||5,hs=+$("houseSaved").value||0;
+  let labels=[],vals=[];for(let i=0;i<=years;i++){labels.push("Y"+i);vals.push(hs+(hg-hs)*(i/years))}
+  drawLine($("houseChart"),labels,[{data:vals,color:"#ffbe55"}]);
+  const last=logs.slice(-30),labs=last.map(x=>x.date.slice(5)),data=last.map(x=>x.aff+x.profit);
+  drawLine($("dailyChart"),labs.length?labs:["—"],[{data:data.length?data:[0],color:"#9b87f5"}]);
+}
+
+document.querySelectorAll("input,textarea").forEach(el=>el.addEventListener("input",()=>{
+  if(el.id==="affCurrent2")$("affCurrent").value=el.value;
+  if(el.id==="affTarget2")$("affTarget").value=el.value;
+  if(el.id==="houseGoal2")$("houseGoal").value=el.value;
+  if(el.id==="houseYears2")$("houseYears").value=el.value;
+  update();
+}));
+$("saveBtn").onclick=saveAll;
+
+function renderLogs(){
+  const tb=$("logTable");tb.innerHTML="";
+  logs.slice().reverse().forEach(x=>tb.innerHTML+=`<tr><td>${x.date}</td><td>${x.content}</td><td>${fmt(x.aff)}</td><td>${x.orders}</td><td>${fmt(x.rev)}</td><td>${fmt(x.profit)}</td></tr>`);
+}
+$("addLog").onclick=()=>{
+  let date=$("logDate").value||new Date().toISOString().slice(0,10);
+  logs.push({date,content:+$("logContent").value||0,aff:+$("logAff").value||0,orders:+$("logOrders").value||0,rev:+$("logRev").value||0,profit:+$("logProfit").value||0});
+  logs.sort((a,b)=>a.date.localeCompare(b.date)); localStorage.setItem("tmv2_logs",JSON.stringify(logs)); renderLogs(); redraw();
+};
+$("clearLogs").onclick=()=>{if(confirm("Xóa toàn bộ nhật ký?")){logs=[];localStorage.setItem("tmv2_logs","[]");renderLogs();redraw()}};
+
+function saveChecks(){document.querySelectorAll("[data-check]").forEach(x=>localStorage.setItem("tmv2_check_"+x.dataset.check,x.checked?"1":"0"))}
+function loadChecks(){document.querySelectorAll("[data-check]").forEach(x=>{x.checked=localStorage.getItem("tmv2_check_"+x.dataset.check)==="1";x.onchange=saveChecks})}
+
+const seed={now:[["Scale affiliate","Nhân bản sản phẩm / format đang ra tiền"],["Review dữ liệu","Tìm content có commission / view tốt"],["Test dropship","Mỗi ngày test ít nhất 1 biến"]],build:[["SOP content","Chuẩn hoá quay - dựng - đăng - đo"],["Editor / uploader","Giảm việc lặp lại"],["Asset online","Website / email khi cash flow ổn"]],later:[["Nhà Đà Nẵng","Tích luỹ vốn và chuẩn bị phương án khai thác"],["Pilates","Studio nhỏ cho vợ"],["Website Tiến Mò","Đẩy mạnh khi engine hiện tại ổn"]]};
+let dragged=null;
+function task(a,b){let d=document.createElement("div");d.className="task";d.draggable=true;d.innerHTML=`<strong>${a}</strong><span>${b}</span>`;d.ondragstart=()=>{dragged=d;setTimeout(()=>d.style.opacity=".4",0)};d.ondragend=()=>{d.style.opacity="1";dragged=null;saveBoard()};return d}
+document.querySelectorAll(".drop").forEach(z=>{z.ondragover=e=>e.preventDefault();z.ondrop=e=>{e.preventDefault();if(dragged)z.appendChild(dragged)}})
+function saveBoard(){let o={};["now","build","later"].forEach(id=>o[id]=[...$(id).children].map(x=>[x.querySelector("strong").textContent,x.querySelector("span").textContent]));localStorage.setItem("tmv2_board",JSON.stringify(o))}
+function loadBoard(){let o=JSON.parse(localStorage.getItem("tmv2_board")||"null")||seed;["now","build","later"].forEach(id=>{ $(id).innerHTML="";(o[id]||[]).forEach(x=>$(id).appendChild(task(x[0],x[1]))) })}
+
+$("exportBtn").onclick=()=>{
+  saveAll();
+  const data={version:2,settings:Object.fromEntries(ids.map(id=>[id,$(id).value])),logs,checks:Object.fromEntries([...document.querySelectorAll("[data-check]")].map(x=>[x.dataset.check,x.checked])),board:JSON.parse(localStorage.getItem("tmv2_board")||"{}")};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="tien-mo-dashboard-backup.json";a.click();URL.revokeObjectURL(a.href);
+};
+$("importInput").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k))$(k).value=v;localStorage.setItem("tmv2_"+k,v)});logs=d.logs||[];localStorage.setItem("tmv2_logs",JSON.stringify(logs));if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));loadChecks();loadBoard();update();alert("Đã nhập backup.")}catch{alert("File backup không hợp lệ.")}};r.readAsText(f)
+};
+
+loadAll();
+$("logDate").value=new Date().toISOString().slice(0,10);
+update();
+</script>
+</body>
+</html>
