@@ -81,7 +81,7 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
 <div class="app">
 <aside class="sidebar">
   <div class="brand">Tiến Mò Dashboard</div>
-  <div class="brand-sub">V2 • Personal Business OS</div>
+  <div class="brand-sub">V3 • Cloud Sync Business OS</div>
   <nav class="nav">
     <button class="active" data-page="overview">Tổng quan</button>
     <button data-page="affiliate">Affiliate</button>
@@ -89,6 +89,7 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
     <button data-page="house">Quỹ nhà</button>
     <button data-page="daily">Daily Log</button>
     <button data-page="focus">Focus Board</button>
+    <button data-page="cloud">Cloud Sync</button>
   </nav>
   <div class="side-card">
     <div class="k">North Star</div>
@@ -106,6 +107,7 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
     <div class="actions">
       <button class="btn" id="exportBtn">Xuất backup</button>
       <label class="btn">Nhập backup<input id="importInput" type="file" accept=".json" hidden></label>
+      <button class="btn" id="cloudStatusBtn">Cloud: chưa kết nối</button>
       <button class="btn primary" id="saveBtn">Lưu dữ liệu</button>
     </div>
   </div>
@@ -333,6 +335,52 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
       </div>
     </div>
   </section>
+
+  <section class="page" id="cloud">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head"><h2>Google Sheets Cloud Sync</h2><span class="badge green">V3</span></div>
+        <div class="note" style="margin-bottom:14px;">
+          Dashboard luôn lưu local trên trình duyệt trước. Khi kết nối Cloud, bạn có thể đẩy toàn bộ trạng thái lên Google Sheets và tải lại trên máy khác.
+        </div>
+        <div class="field-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="field">
+            <label>Apps Script Web App URL</label>
+            <input id="cloudUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+          </div>
+          <div class="field">
+            <label>Secret key</label>
+            <input id="cloudSecret" type="password" placeholder="Nhập secret key">
+          </div>
+        </div>
+        <div class="actions" style="margin-top:12px;">
+          <button class="btn primary" id="cloudSaveBtn">Lưu lên Cloud</button>
+          <button class="btn" id="cloudLoadBtn">Tải từ Cloud</button>
+          <button class="btn" id="cloudTestBtn">Kiểm tra kết nối</button>
+        </div>
+        <div id="cloudMessage" class="note" style="margin-top:12px;">Chưa cấu hình Cloud Sync.</div>
+      </div>
+
+      <div class="card span6">
+        <div class="section-head"><h2>Google Sheet dữ liệu</h2><span class="badge">Created</span></div>
+        <div class="note">Mình đã tạo sẵn Google Sheet cho bạn:</div>
+        <div style="margin-top:10px;"><a href="https://docs.google.com/spreadsheets/d/1sV1jcmNOXtIscA0wZbgtp5TgCwfQFJiVYoXkaGkGmNI/edit" target="_blank" style="color:#8fc4f5;font-weight:800;">Mở “Tiến Mò Dashboard Data”</a></div>
+        <div class="note" style="margin-top:12px;">Bạn không cần nhập tay dữ liệu vào Sheet này. Apps Script sẽ lưu trạng thái dashboard vào tab <strong>dashboard_state</strong>.</div>
+      </div>
+
+      <div class="card span6">
+        <div class="section-head"><h2>Cách hoạt động</h2><span class="badge amber">Local-first</span></div>
+        <table>
+          <tbody>
+            <tr><td>1</td><td>Bạn chỉnh dashboard</td><td>Lưu local ngay trên trình duyệt</td></tr>
+            <tr><td>2</td><td>Bấm “Lưu lên Cloud”</td><td>Đẩy toàn bộ dữ liệu lên Google Sheets</td></tr>
+            <tr><td>3</td><td>Mở máy khác</td><td>Nhập URL + secret rồi bấm “Tải từ Cloud”</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
 </main>
 </div>
 
@@ -340,7 +388,7 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
 const $=id=>document.getElementById(id);
 const fmt=n=>{n=+n||0; let a=Math.abs(n); if(a>=1e9)return (n/1e9).toFixed(a>=1e10?0:1)+"B"; if(a>=1e6)return (n/1e6).toFixed(a>=1e7?0:1)+"M"; if(a>=1e3)return Math.round(n/1e3)+"K"; return Math.round(n).toString()};
 const usd=n=>"$"+Math.round(n).toLocaleString("en-US");
-const ids=["affCurrent","affTarget","houseGoal","houseYears","affCurrent2","affTarget2","contentPerDay","activeDays","aov","fx","margin","dropTarget","houseGoal2","houseYears2","houseSaved","houseMonthlyActual","weeklyFocus","decisionRule"];
+const ids=["affCurrent","affTarget","houseGoal","houseYears","affCurrent2","affTarget2","contentPerDay","activeDays","aov","fx","margin","dropTarget","houseGoal2","houseYears2","houseSaved","houseMonthlyActual","weeklyFocus","decisionRule","cloudUrl","cloudSecret"];
 
 function syncPairs(src,dst){ if($(src)&&$(dst)) $(dst).value=$(src).value }
 function saveAll(){
@@ -457,9 +505,87 @@ $("importInput").onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k))$(k).value=v;localStorage.setItem("tmv2_"+k,v)});logs=d.logs||[];localStorage.setItem("tmv2_logs",JSON.stringify(logs));if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));loadChecks();loadBoard();update();alert("Đã nhập backup.")}catch{alert("File backup không hợp lệ.")}};r.readAsText(f)
 };
 
+
+function buildCloudState(){
+  saveAll();
+  return {
+    version:3,
+    updatedAt:new Date().toISOString(),
+    settings:Object.fromEntries(ids.filter(id=>!["cloudUrl","cloudSecret"].includes(id)).map(id=>[id,$(id).value])),
+    logs,
+    checks:Object.fromEntries([...document.querySelectorAll("[data-check]")].map(x=>[x.dataset.check,x.checked])),
+    board:JSON.parse(localStorage.getItem("tmv2_board")||"{}")
+  };
+}
+function applyCloudState(d){
+  if(!d) throw new Error("Cloud data trống");
+  Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k)){$(k).value=v;localStorage.setItem("tmv2_"+k,v)}});
+  logs=d.logs||[];
+  localStorage.setItem("tmv2_logs",JSON.stringify(logs));
+  if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));
+  Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));
+  loadChecks(); loadBoard(); update();
+}
+function setCloudMessage(msg, ok=false){
+  $("cloudMessage").textContent=msg;
+  $("cloudMessage").style.color=ok?"#85f1c2":"#93a4b8";
+  $("cloudStatusBtn").textContent=ok?"Cloud: đã kết nối":"Cloud: chưa kết nối";
+}
+async function cloudRequest(action, state=null){
+  const url=$("cloudUrl").value.trim(), secret=$("cloudSecret").value.trim();
+  if(!url) throw new Error("Chưa nhập Apps Script Web App URL");
+  if(!secret) throw new Error("Chưa nhập secret key");
+  if(action==="load" || action==="ping"){
+    const u=new URL(url);
+    u.searchParams.set("action",action);
+    u.searchParams.set("secret",secret);
+    const r=await fetch(u.toString(),{method:"GET",cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return await r.json();
+  }
+  const r=await fetch(url,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({action:"save",secret,state})
+  });
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return await r.json();
+}
+$("cloudTestBtn").onclick=async()=>{
+  try{
+    saveAll();
+    setCloudMessage("Đang kiểm tra...");
+    const d=await cloudRequest("ping");
+    if(!d.ok) throw new Error(d.error||"Kết nối thất bại");
+    setCloudMessage("Kết nối Google Sheets thành công.",true);
+  }catch(e){setCloudMessage("Lỗi: "+e.message,false)}
+};
+$("cloudSaveBtn").onclick=async()=>{
+  try{
+    saveAll();
+    setCloudMessage("Đang lưu lên Cloud...");
+    const d=await cloudRequest("save",buildCloudState());
+    if(!d.ok) throw new Error(d.error||"Không lưu được");
+    setCloudMessage("Đã lưu lên Cloud lúc "+new Date().toLocaleTimeString("vi-VN"),true);
+  }catch(e){setCloudMessage("Lỗi: "+e.message,false)}
+};
+$("cloudLoadBtn").onclick=async()=>{
+  try{
+    saveAll();
+    if(!confirm("Tải dữ liệu Cloud sẽ thay dữ liệu local hiện tại. Tiếp tục?")) return;
+    setCloudMessage("Đang tải từ Cloud...");
+    const d=await cloudRequest("load");
+    if(!d.ok) throw new Error(d.error||"Không tải được");
+    applyCloudState(d.state);
+    setCloudMessage("Đã tải dữ liệu Cloud thành công.",true);
+  }catch(e){setCloudMessage("Lỗi: "+e.message,false)}
+};
+$("cloudStatusBtn").onclick=()=>document.querySelector('[data-page="cloud"]').click();
+
 loadAll();
 $("logDate").value=new Date().toISOString().slice(0,10);
 update();
+if($("cloudUrl").value.trim() && $("cloudSecret").value.trim()) setCloudMessage("Đã có cấu hình Cloud. Bấm “Kiểm tra kết nối”.",false);
 </script>
 </body>
 </html>
