@@ -75,16 +75,274 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}.nav{flex-direction:row;overflow:auto}.side-card{display:none}.span8,.span6,.span4{grid-column:span 12}.span3{grid-column:span 6}.field-grid,.daily-form{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.main{padding:14px}.span3{grid-column:span 12}.topbar{align-items:flex-start;flex-direction:column}.field-grid,.daily-form,.stats,.board,.checklist,.split{grid-template-columns:1fr}.hero h2{font-size:26px}}
+
+.tiktok-form{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.rank-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.025)}
+.metric-card .m-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.metric-card .m-value{font-size:21px;font-weight:850}
+.winner{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(61,220,151,.12);color:#85f1c2;border:1px solid rgba(61,220,151,.2)}
+.good{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(73,167,255,.12);color:#9ccfff;border:1px solid rgba(73,167,255,.2)}
+.test{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(255,190,85,.10);color:#ffd490;border:1px solid rgba(255,190,85,.2)}
+.bad{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(255,107,181,.10);color:#ffabd1;border:1px solid rgba(255,107,181,.18)}
+.scroll-table{overflow:auto}
+@media(max-width:1100px){.tiktok-form{grid-template-columns:repeat(2,1fr)}.rank-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.tiktok-form,.rank-grid{grid-template-columns:1fr}}
+
+
+.source-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:#ffbe55;display:inline-block}
+.dot.ok{background:#3ddc97}
+.import-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.import-step{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.025)}
+.import-step .n{font-size:11px;color:#8fc4f5;text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.import-step strong{display:block;margin-top:7px;font-size:14px}
+.import-step span{display:block;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.45}
+@media(max-width:1100px){.import-steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.import-steps{grid-template-columns:1fr}}
+
+
+/* ===== Mobile UX patch — no business logic changed ===== */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{-webkit-tap-highlight-color:transparent}
+button,a,input,textarea,select{touch-action:manipulation}
+.scroll-table{-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.card,.hero{overflow:hidden}
+canvas{max-width:100%}
+
+/* Tablet */
+@media(max-width:1100px){
+  .app{display:block}
+  .sidebar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    height:auto;
+    padding:10px 14px;
+    border-right:none;
+    border-bottom:1px solid var(--line);
+    background:rgba(5,14,25,.94);
+    backdrop-filter:blur(18px);
+  }
+  .brand{font-size:16px;margin-bottom:2px}
+  .brand-sub{font-size:10px;margin-bottom:8px}
+  .nav{
+    flex-direction:row;
+    overflow-x:auto;
+    gap:6px;
+    padding-bottom:2px;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{
+    flex:0 0 auto;
+    white-space:nowrap;
+    padding:9px 12px;
+    border-radius:12px;
+    font-size:12px;
+  }
+  .side-card{display:none}
+  .main{padding:16px}
+  .topbar{
+    margin-bottom:14px;
+    align-items:flex-start;
+  }
+  .title h1{font-size:24px}
+  .title p{font-size:12px;line-height:1.45}
+  .actions{gap:7px}
+  .btn{min-height:42px}
+}
+
+/* Phone */
+@media(max-width:700px){
+  :root{--r:18px}
+  body{background:linear-gradient(180deg,#06101c,#081522 60%,#07111f)}
+  .sidebar{
+    padding:8px 10px 9px;
+    top:0;
+  }
+  .brand{font-size:15px}
+  .brand-sub{display:none}
+  .nav{margin-top:6px}
+  .nav button{
+    min-height:38px;
+    padding:8px 11px;
+    font-size:11.5px;
+  }
+
+  .main{padding:12px 10px 24px}
+  .topbar{
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .title h1{font-size:22px;line-height:1.2}
+  .title p{font-size:12px;margin-top:4px}
+  .actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  .actions .btn,.actions label.btn{
+    width:100%;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:9px 10px;
+    font-size:12px;
+  }
+  #saveBtn{grid-column:1/-1}
+
+  .hero{
+    padding:18px 15px;
+    border-radius:20px;
+    margin-bottom:12px;
+  }
+  .hero h2{font-size:23px;line-height:1.22;margin:7px 0}
+  .hero p{font-size:12.5px;line-height:1.55}
+
+  .grid{gap:10px}
+  .span12,.span8,.span6,.span4,.span3{grid-column:span 12}
+  .card{
+    padding:14px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.20);
+  }
+  .section-head{
+    align-items:flex-start;
+    margin-bottom:10px;
+  }
+  .section-head h2{font-size:16px;line-height:1.25}
+  .badge{font-size:9.5px;padding:5px 8px}
+
+  .kpi .label{font-size:11px;margin-bottom:6px}
+  .kpi .value{font-size:25px}
+  .kpi .delta{font-size:11px}
+
+  .field-grid,.daily-form,.tiktok-form,.stats,.rank-grid,.mini-grid,.split,.checklist,.import-steps{
+    grid-template-columns:1fr !important;
+    gap:8px;
+  }
+  .field{
+    padding:10px 11px;
+    border-radius:13px;
+  }
+  .field label{font-size:9.5px;margin-bottom:6px}
+  /* 16px avoids Safari/iPhone zoom-on-focus */
+  .field input,.field select,.field textarea{
+    font-size:16px;
+    min-height:26px;
+  }
+  .field textarea{min-height:86px}
+
+  .stat,.metric-card{
+    padding:12px;
+    border-radius:14px;
+  }
+  .stat .v,.metric-card .m-value{font-size:20px}
+
+  .board{grid-template-columns:1fr;gap:9px}
+  .col{min-height:auto;padding:10px}
+  .drop{min-height:120px}
+  .task{padding:11px;border-radius:12px}
+
+  canvas{
+    height:210px !important;
+    min-height:210px;
+  }
+
+  .scroll-table{
+    margin:0 -14px;
+    padding:0 14px 4px;
+    width:calc(100% + 28px);
+    overflow-x:auto;
+  }
+  table{
+    min-width:680px;
+    font-size:11.5px;
+  }
+  th,td{
+    padding:9px 8px;
+    white-space:nowrap;
+  }
+  th{font-size:9.5px}
+  .scroll-table::after{
+    content:"← vuốt ngang để xem thêm →";
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    padding:7px 2px 1px;
+    text-align:center;
+  }
+
+  .check{
+    min-height:46px;
+    padding:10px 12px;
+    font-size:12px;
+  }
+  .check input{width:19px;height:19px}
+
+  .note{font-size:11.5px;line-height:1.55}
+  .bigquote{font-size:19px}
+
+  .progress{height:8px}
+
+  /* Keep in-card button rows usable on phones */
+  .card .actions{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+  }
+  .card .actions .btn,.card .actions a.btn{
+    width:100%;
+    min-height:44px;
+  }
+
+  /* Cloud page: stack config inputs/actions cleanly */
+  #cloud .field-grid{grid-template-columns:1fr !important}
+  #cloud .actions{display:grid;grid-template-columns:1fr}
+  #cloud .actions .btn{width:100%}
+
+  /* Daily log add button becomes full width */
+  #addLog,#ttAddBtn,#weeklySyncBtn{
+    width:100%;
+    min-height:46px;
+  }
+
+  /* Keep important nav/status controls visible but compact */
+  #cloudStatusBtn{font-size:11px}
+
+  /* Better safe-area support for iPhone */
+  .sidebar{padding-top:max(8px,env(safe-area-inset-top))}
+  .main{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+}
+
+/* Very narrow phones */
+@media(max-width:390px){
+  .main{padding-left:8px;padding-right:8px}
+  .card{padding:12px}
+  .title h1{font-size:20px}
+  .hero h2{font-size:21px}
+  .actions{grid-template-columns:1fr}
+  #saveBtn{grid-column:auto}
+  canvas{height:190px !important;min-height:190px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="brand">Tiến Mò Dashboard</div>
-  <div class="brand-sub">V3 • Cloud Sync Business OS</div>
-  <nav class="nav">
+  <div class="brand-sub">V3.3M • Mobile Optimized</div>
+  <nav class="nav" aria-label="Điều hướng dashboard">
     <button class="active" data-page="overview">Tổng quan</button>
     <button data-page="affiliate">Affiliate</button>
+    <button data-page="tiktok">TikTok Tracker</button>
+    <button data-page="weekly">Weekly Reports</button>
     <button data-page="dropship">Dropship</button>
     <button data-page="house">Quỹ nhà</button>
     <button data-page="daily">Daily Log</button>
@@ -134,9 +392,9 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
       <div class="card span4">
         <div class="section-head"><h2>Mục tiêu tháng</h2><span class="badge">Editable</span></div>
         <div class="field-grid" style="grid-template-columns:1fr;">
-          <div class="field"><label>Affiliate hiện tại (VND)</label><input id="affCurrent" type="number" value="17500000"></div>
-          <div class="field"><label>Affiliate target (VND)</label><input id="affTarget" type="number" value="50000000"></div>
-          <div class="field"><label>Nhà mục tiêu (VND)</label><input id="houseGoal" type="number" value="5500000000"></div>
+          <div class="field"><label>Affiliate hiện tại (VND)</label><input id="affCurrent" type="text" inputmode="numeric" value="17500000"></div>
+          <div class="field"><label>Affiliate target (VND)</label><input id="affTarget" type="text" inputmode="numeric" value="50000000"></div>
+          <div class="field"><label>Nhà mục tiêu (VND)</label><input id="houseGoal" type="text" inputmode="numeric" value="5500000000"></div>
           <div class="field"><label>Số năm</label><input id="houseYears" type="number" value="5"></div>
         </div>
       </div>
@@ -158,8 +416,8 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
       <div class="card span12">
         <div class="section-head"><h2>Affiliate Engine</h2><span class="badge green">Cash Flow</span></div>
         <div class="field-grid">
-          <div class="field"><label>Thu nhập hiện tại</label><input id="affCurrent2" type="number" value="17500000"></div>
-          <div class="field"><label>Target / tháng</label><input id="affTarget2" type="number" value="50000000"></div>
+          <div class="field"><label>Thu nhập hiện tại</label><input id="affCurrent2" type="text" inputmode="numeric" value="17500000"></div>
+          <div class="field"><label>Target / tháng</label><input id="affTarget2" type="text" inputmode="numeric" value="50000000"></div>
           <div class="field"><label>Content / ngày</label><input id="contentPerDay" type="number" value="10"></div>
           <div class="field"><label>Ngày hoạt động / tháng</label><input id="activeDays" type="number" value="30"></div>
         </div>
@@ -200,13 +458,183 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
     </div>
   </section>
 
+
+  <section class="page" id="tiktok">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head">
+          <h2>TikTok Video Performance Tracker</h2>
+          <span class="badge green">Affiliate Analytics</span>
+        </div>
+        <div class="note" style="margin-bottom:14px;">
+          Nhập từng video để biết video nào thực sự tạo tiền. Hệ thống ưu tiên các chỉ số: Commission / 1K views, Orders / 1K views, CTR và tỷ lệ chuyển đổi.
+        </div>
+
+        <div class="tiktok-form">
+          <div class="field"><label>Ngày đăng</label><input id="ttDate" type="date"></div>
+          <div class="field"><label>Sản phẩm</label><input id="ttProduct" type="text" placeholder="Tên sản phẩm"></div>
+          <div class="field"><label>Hook / góc nội dung</label><input id="ttHook" type="text" placeholder="Ví dụ: Đừng mua nếu..."></div>
+          <div class="field"><label>Link video</label><input id="ttUrl" type="text" placeholder="https://..."></div>
+          <div class="field"><label>Views</label><input id="ttViews" type="text" inputmode="numeric" value="0"></div>
+
+          <div class="field"><label>Likes</label><input id="ttLikes" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Comments</label><input id="ttComments" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Shares</label><input id="ttShares" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Product clicks</label><input id="ttClicks" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Orders</label><input id="ttOrders" type="text" inputmode="numeric" value="0"></div>
+
+          <div class="field"><label>GMV / Revenue (VND)</label><input id="ttRevenue" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Commission (VND)</label><input id="ttCommission" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Avg watch time (s)</label><input id="ttWatch" type="number" step="0.1" value="0"></div>
+          <div class="field"><label>Watched full video (%)</label><input id="ttFullWatch" type="number" step="0.1" value="0"></div>
+          <div class="field"><label>Ghi chú</label><input id="ttNote" type="text" placeholder="Điểm cần nhớ"></div>
+        </div>
+        <button class="btn primary" id="ttAddBtn" style="margin-top:12px;">Thêm video</button>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>Tổng quan hiệu quả</h2><span class="badge">Auto-calculated</span></div>
+        <div class="rank-grid">
+          <div class="metric-card"><div class="m-label">Số video đã theo dõi</div><div class="m-value" id="ttTotalVideos">0</div></div>
+          <div class="metric-card"><div class="m-label">Tổng commission</div><div class="m-value" id="ttTotalCommission">0</div></div>
+          <div class="metric-card"><div class="m-label">Commission / 1K views</div><div class="m-value" id="ttAvgCPM">0</div></div>
+          <div class="metric-card"><div class="m-label">Orders / 1K views</div><div class="m-value" id="ttOrdersPer1K">0</div></div>
+        </div>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head">
+          <h2>Top video tạo tiền</h2>
+          <span class="badge green">Winner ranking</span>
+        </div>
+        <canvas id="ttChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Tiêu chí Winner</h2><span class="badge amber">Scale logic</span></div>
+        <table>
+          <tbody>
+            <tr><td>Winner</td><td>Commission / 1K views ≥ 50K</td></tr>
+            <tr><td>Good</td><td>20K – 49.9K</td></tr>
+            <tr><td>Test thêm</td><td>5K – 19.9K</td></tr>
+            <tr><td>Yếu</td><td>&lt; 5K</td></tr>
+          </tbody>
+        </table>
+        <div class="note" style="margin-top:12px;">Ngưỡng này là mặc định để bạn bắt đầu. Sau 30–50 video thật, mình có thể hiệu chỉnh theo dữ liệu riêng của kênh Tiến Mò.</div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head">
+          <h2>Danh sách video</h2>
+          <div class="actions">
+            <button class="btn" id="ttSortBtn">Sắp xếp theo Commission/1K</button>
+            <button class="btn" id="ttClearBtn">Xóa toàn bộ</button>
+          </div>
+        </div>
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Ngày</th><th>Sản phẩm</th><th>Hook</th><th>Views</th><th>Clicks</th><th>Orders</th>
+                <th>Commission</th><th>Comm/1K</th><th>CTR</th><th>CVR</th><th>Engagement</th><th>Đánh giá</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="ttTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="page" id="weekly">
+    <div class="grid">
+      <div class="card span12">
+        <div class="section-head">
+          <h2>Weekly Affiliate Reports</h2>
+          <div class="source-status"><span class="dot" id="weeklyDot"></span><span id="weeklyStatus">Chưa tải dữ liệu</span></div>
+        </div>
+        <div class="note">
+          Nguồn: file Google Sheets affiliate hiện tại của bạn. Mỗi tuần chỉ cần cập nhật các tab RAW theo quy trình cũ, sau đó bấm <strong>Đồng bộ báo cáo</strong>. Dashboard không yêu cầu nhập lại từng đơn.
+        </div>
+        <div class="actions" style="margin-top:14px;">
+          <button class="btn primary" id="weeklySyncBtn">Đồng bộ báo cáo</button>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1shAidh3ggl1Gr1_VSx5uM2nJetGM-U7k8Cdo8HVTELI/edit" target="_blank" style="text-decoration:none">Mở file Affiliate</a>
+        </div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>Quy trình mỗi tuần</h2><span class="badge green">~5–10 phút / tuần</span></div>
+        <div class="import-steps">
+          <div class="import-step"><div class="n">Bước 1</div><strong>Export Shopee</strong><span>Dán báo cáo mới vào RAW_SHOPEE, giữ đúng header và tránh thêm trùng kỳ.</span></div>
+          <div class="import-step"><div class="n">Bước 2</div><strong>Export TikTok</strong><span>Dán báo cáo affiliate vào RAW_TIKTOK. Id nội dung sẽ được dùng để gom hiệu quả theo video.</span></div>
+          <div class="import-step"><div class="n">Bước 3</div><strong>Clicks</strong><span>Dán click mới vào RAW_CLICKS. File hiện đã có logic tháng và loại trùng theo Click ID.</span></div>
+          <div class="import-step"><div class="n">Bước 4</div><strong>Sync Dashboard</strong><span>Quay lại đây và bấm Đồng bộ báo cáo. Không cần nhập lại số liệu vào dashboard.</span></div>
+        </div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>Tổng quan tháng</h2><span class="badge">LOOKER_MONTHLY_2026</span></div>
+        <div class="rank-grid">
+          <div class="metric-card"><div class="m-label">Hoa hồng ghi nhận tháng gần nhất có dữ liệu</div><div class="m-value" id="wkRecognized">—</div></div>
+          <div class="metric-card"><div class="m-label">Shopee completed lines</div><div class="m-value" id="wkShopeeCompleted">—</div></div>
+          <div class="metric-card"><div class="m-label">TikTok settled lines</div><div class="m-value" id="wkTikTokSettled">—</div></div>
+          <div class="metric-card"><div class="m-label">Clicks Shopee</div><div class="m-value" id="wkClicks">—</div></div>
+        </div>
+      </div>
+
+      <div class="card span8">
+        <div class="section-head"><h2>Hoa hồng ghi nhận theo tháng</h2><span class="badge green">Recognized Commission</span></div>
+        <canvas id="weeklyCommissionChart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="card span4">
+        <div class="section-head"><h2>Data coverage</h2><span class="badge amber">Source-aware</span></div>
+        <table>
+          <tbody>
+            <tr><td>Clicks</td><td id="wkClicksCoverage">—</td></tr>
+            <tr><td>Shopee orders</td><td id="wkShopeeCoverage">—</td></tr>
+            <tr><td>TikTok affiliate</td><td id="wkTikTokCoverage">—</td></tr>
+            <tr><td>Organic views</td><td><span class="test">Chưa có</span></td></tr>
+          </tbody>
+        </table>
+        <div class="note" style="margin-top:12px;">Không dùng file này để suy ra CTR/CVR video nếu thiếu view hoặc tracking cùng kỳ.</div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>12 tháng Affiliate</h2><span class="badge">Shopee + TikTok</span></div>
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Tháng</th><th>Clicks</th><th>Shopee lines</th><th>Shopee completed</th><th>TikTok lines</th><th>TikTok settled</th><th>Shopee commission</th><th>TikTok commission</th><th>Recognized</th></tr>
+            </thead>
+            <tbody id="weeklyMonthlyTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card span12">
+        <div class="section-head"><h2>TikTok content tạo hoa hồng</h2><span class="badge green">Từ RAW_TIKTOK</span></div>
+        <div class="note" style="margin-bottom:12px;">Đây là hiệu quả affiliate theo <strong>Id nội dung</strong>: số dòng đơn, đơn distinct, GMV và hoa hồng. Chưa xếp theo view vì file nguồn hiện không có lượt xem.</div>
+        <div class="scroll-table">
+          <table>
+            <thead><tr><th>Content ID</th><th>Sản phẩm nổi bật</th><th>Order lines</th><th>Distinct orders</th><th>Settled lines</th><th>GMV</th><th>Net commission</th><th>Commission / order</th></tr></thead>
+            <tbody id="weeklyTikTokTop"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <section class="page" id="dropship">
     <div class="grid">
       <div class="card span12">
         <div class="section-head"><h2>Dropship Ramp</h2><span class="badge green">Future Bet</span></div>
         <div class="field-grid">
           <div class="field"><label>AOV (USD)</label><input id="aov" type="number" value="90"></div>
-          <div class="field"><label>USD/VND</label><input id="fx" type="number" value="25976"></div>
+          <div class="field"><label>USD/VND</label><input id="fx" type="text" inputmode="numeric" value="25976"></div>
           <div class="field"><label>Net margin (%)</label><input id="margin" type="number" value="20"></div>
           <div class="field"><label>Target hiện tại (đơn/ngày)</label><input id="dropTarget" type="number" value="1"></div>
         </div>
@@ -240,10 +668,10 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
       <div class="card span12">
         <div class="section-head"><h2>House Fund</h2><span class="badge green">Asset Goal</span></div>
         <div class="field-grid">
-          <div class="field"><label>Mục tiêu nhà</label><input id="houseGoal2" type="number" value="5500000000"></div>
+          <div class="field"><label>Mục tiêu nhà</label><input id="houseGoal2" type="text" inputmode="numeric" value="5500000000"></div>
           <div class="field"><label>Thời gian (năm)</label><input id="houseYears2" type="number" value="5"></div>
-          <div class="field"><label>Quỹ đã có</label><input id="houseSaved" type="number" value="0"></div>
-          <div class="field"><label>Đóng góp / tháng</label><input id="houseMonthlyActual" type="number" value="0"></div>
+          <div class="field"><label>Quỹ đã có</label><input id="houseSaved" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Đóng góp / tháng</label><input id="houseMonthlyActual" type="text" inputmode="numeric" value="0"></div>
         </div>
         <div class="progress"><div id="houseProgress"></div></div>
         <div class="stats">
@@ -280,10 +708,10 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
         <div class="daily-form">
           <div class="field"><label>Ngày</label><input id="logDate" type="date"></div>
           <div class="field"><label>Content</label><input id="logContent" type="number" value="0"></div>
-          <div class="field"><label>Affiliate commission</label><input id="logAff" type="number" value="0"></div>
+          <div class="field"><label>Affiliate commission</label><input id="logAff" type="text" inputmode="numeric" value="0"></div>
           <div class="field"><label>Dropship orders</label><input id="logOrders" type="number" value="0"></div>
-          <div class="field"><label>Revenue dropship</label><input id="logRev" type="number" value="0"></div>
-          <div class="field"><label>Profit dropship</label><input id="logProfit" type="number" value="0"></div>
+          <div class="field"><label>Revenue dropship</label><input id="logRev" type="text" inputmode="numeric" value="0"></div>
+          <div class="field"><label>Profit dropship</label><input id="logProfit" type="text" inputmode="numeric" value="0"></div>
         </div>
         <button class="btn primary" id="addLog" style="margin-top:12px;">Thêm vào nhật ký</button>
       </div>
@@ -388,17 +816,56 @@ td{color:#dce6ef} tr:last-child td{border-bottom:none}
 const $=id=>document.getElementById(id);
 const fmt=n=>{n=+n||0; let a=Math.abs(n); if(a>=1e9)return (n/1e9).toFixed(a>=1e10?0:1)+"B"; if(a>=1e6)return (n/1e6).toFixed(a>=1e7?0:1)+"M"; if(a>=1e3)return Math.round(n/1e3)+"K"; return Math.round(n).toString()};
 const usd=n=>"$"+Math.round(n).toLocaleString("en-US");
+
+const parseNum=v=>{
+  if(typeof v==="number") return v;
+  const s=String(v??"").replace(/,/g,"").replace(/\s/g,"").trim();
+  const n=Number(s);
+  return Number.isFinite(n)?n:0;
+};
+const formatThousands=v=>{
+  const n=parseNum(v);
+  if(!String(v??"").trim()) return "";
+  return Math.round(n).toLocaleString("en-US");
+};
+const groupedNumberIds=["affCurrent","affTarget","houseGoal","affCurrent2","affTarget2","fx","houseGoal2","houseSaved","houseMonthlyActual","logAff","logRev","logProfit","ttViews","ttLikes","ttComments","ttShares","ttClicks","ttOrders","ttRevenue","ttCommission"];
+function applyGroupedInputFormatting(){
+  groupedNumberIds.forEach(id=>{
+    const el=$(id);
+    if(!el) return;
+    el.value=formatThousands(el.value);
+    el.addEventListener("input",()=>{
+      const raw=el.value.replace(/[^\d]/g,"");
+      el.value=raw?Number(raw).toLocaleString("en-US"):"";
+      update();
+    });
+    el.addEventListener("focus",()=>{
+      requestAnimationFrame(()=>{ try{ el.setSelectionRange(el.value.length,el.value.length); }catch(e){} });
+    });
+  });
+}
+
 const ids=["affCurrent","affTarget","houseGoal","houseYears","affCurrent2","affTarget2","contentPerDay","activeDays","aov","fx","margin","dropTarget","houseGoal2","houseYears2","houseSaved","houseMonthlyActual","weeklyFocus","decisionRule","cloudUrl","cloudSecret"];
 
-function syncPairs(src,dst){ if($(src)&&$(dst)) $(dst).value=$(src).value }
+function syncPairs(src,dst){
+  if($(src)&&$(dst)){
+    $(dst).value=$(src).value;
+    if(groupedNumberIds.includes(dst)) $(dst).value=formatThousands($(dst).value);
+  }
+}
 function saveAll(){
-  ids.forEach(id=>localStorage.setItem("tmv2_"+id,$(id).value));
+  ids.forEach(id=>{
+    const value = groupedNumberIds.includes(id) ? String(parseNum($(id).value)) : $(id).value;
+    localStorage.setItem("tmv2_"+id,value);
+  });
   saveChecks(); saveBoard(); localStorage.setItem("tmv2_logs",JSON.stringify(logs));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
   flash("Đã lưu dữ liệu");
 }
 function loadAll(){
-  ids.forEach(id=>{let v=localStorage.getItem("tmv2_"+id); if(v!==null)$(id).value=v});
+  ids.forEach(id=>{let v=localStorage.getItem("tmv2_"+id); if(v!==null)$(id).value=groupedNumberIds.includes(id)?formatThousands(v):v});
   loadChecks(); loadBoard(); logs=JSON.parse(localStorage.getItem("tmv2_logs")||"[]");
+  tiktokVideos=JSON.parse(localStorage.getItem("tmv2_tiktokVideos")||"[]");
 }
 
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
@@ -435,11 +902,13 @@ function drawLine(canvas,labels,series,opts={}){
 function flash(t){$("saveBtn").textContent=t;setTimeout(()=>$("saveBtn").textContent="Lưu dữ liệu",1100)}
 
 let logs=[];
+let tiktokVideos=[];
+let weeklyAffiliateData=null;
 function update(){
   syncPairs("affCurrent","affCurrent2"); syncPairs("affTarget","affTarget2"); syncPairs("houseGoal","houseGoal2"); syncPairs("houseYears","houseYears2");
-  const ac=+$("affCurrent").value||0,at=+$("affTarget").value||1,c=+$("contentPerDay").value||10,d=+$("activeDays").value||30;
-  const hg=+$("houseGoal").value||0,hy=+$("houseYears").value||1;
-  const aov=+$("aov").value||90,fx=+$("fx").value||25976,margin=(+$("margin").value||20)/100,dt=+$("dropTarget").value||1;
+  const ac=parseNum($("affCurrent").value),at=(parseNum($("affTarget").value)||1),c=(parseNum($("contentPerDay").value)||10),d=(parseNum($("activeDays").value)||30);
+  const hg=parseNum($("houseGoal").value),hy=(parseNum($("houseYears").value)||1);
+  const aov=(parseNum($("aov").value)||90),fx=(parseNum($("fx").value)||25976),margin=(parseNum($("margin").value)||20)/100,dt=(parseNum($("dropTarget").value)||1);
   $("ovAff").textContent=fmt(ac); $("ovHouse").textContent=fmt(hg); $("ovDrop").textContent=dt+" đơn/ngày"; $("ovContent").textContent=c;
   $("ovAffDaily").textContent=fmt(at/30); $("ovHouseMonth").textContent=fmt(hg/(hy*12)); $("ovHouseDay").textContent=fmt(hg/(hy*365));
   let p=Math.min(100,ac/at*100); $("affProgress").style.width=p+"%"; $("affPct").textContent=p.toFixed(0)+"%";
@@ -449,26 +918,28 @@ function update(){
   const stages=[1,2,3,5,10],tbody=$("dropTable");tbody.innerHTML="";
   stages.forEach((x,i)=>{let r=x*30*aov*fx,pf=r*margin;tbody.innerHTML+=`<tr><td>${["Month 1","Month 2","Month 3","Next target","Scale target"][i]}</td><td>${x}</td><td>${usd(x*30*aov)} (≈ ${fmt(r)})</td><td>${fmt(pf)}</td></tr>`});
 
-  const hs=+$("houseSaved").value||0,hg2=+$("houseGoal2").value||hg,hy2=+$("houseYears2").value||hy;
+  const hs=parseNum($("houseSaved").value),hg2=(parseNum($("houseGoal2").value)||hg),hy2=(parseNum($("houseYears2").value)||hy);
   let hp=Math.min(100,hs/hg2*100);$("houseProgress").style.width=hp+"%";$("housePct").textContent=hp.toFixed(1)+"%";$("houseRemain").textContent=fmt(Math.max(0,hg2-hs));
   $("houseNeedMonth").textContent=fmt(Math.max(0,hg2-hs)/(hy2*12));$("houseNeedDay").textContent=fmt(Math.max(0,hg2-hs)/(hy2*365));
   renderLogs(); redraw();
 }
 function redraw(){
-  drawLine($("overviewChart"),["Hiện tại","30M","50M","75M","100M"],[{data:[+$("affCurrent").value||0,30e6,50e6,75e6,100e6],color:"#49a7ff"}]);
-  drawLine($("affChart"),["Now","30M","50M","75M","100M"],[{data:[+$("affCurrent").value||0,30e6,50e6,75e6,100e6],color:"#3ddc97"}]);
-  const aov=+$("aov").value||90,fx=+$("fx").value||25976;drawLine($("dropChart"),["1/day","2/day","3/day","5/day","10/day"],[{data:[1,2,3,5,10].map(x=>x*30*aov*fx),color:"#ff6bb5"}]);
-  const hg=+$("houseGoal2").value||5.5e9,years=+$("houseYears2").value||5,hs=+$("houseSaved").value||0;
+  drawLine($("overviewChart"),["Hiện tại","30M","50M","75M","100M"],[{data:[parseNum($("affCurrent").value),30e6,50e6,75e6,100e6],color:"#49a7ff"}]);
+  drawLine($("affChart"),["Now","30M","50M","75M","100M"],[{data:[parseNum($("affCurrent").value),30e6,50e6,75e6,100e6],color:"#3ddc97"}]);
+  const aov=(parseNum($("aov").value)||90),fx=(parseNum($("fx").value)||25976);drawLine($("dropChart"),["1/day","2/day","3/day","5/day","10/day"],[{data:[1,2,3,5,10].map(x=>x*30*aov*fx),color:"#ff6bb5"}]);
+  const hg=+$("houseGoal2").value||5.5e9,years=+$("houseYears2").value||5,hs=parseNum($("houseSaved").value);
   let labels=[],vals=[];for(let i=0;i<=years;i++){labels.push("Y"+i);vals.push(hs+(hg-hs)*(i/years))}
   drawLine($("houseChart"),labels,[{data:vals,color:"#ffbe55"}]);
   const last=logs.slice(-30),labs=last.map(x=>x.date.slice(5)),data=last.map(x=>x.aff+x.profit);
   drawLine($("dailyChart"),labs.length?labs:["—"],[{data:data.length?data:[0],color:"#9b87f5"}]);
+  if($("ttChart")) drawTikTokChart();
+  if($("weeklyCommissionChart") && weeklyAffiliateData) renderWeeklyMonthly(weeklyAffiliateData.monthly||[]);
 }
 
 document.querySelectorAll("input,textarea").forEach(el=>el.addEventListener("input",()=>{
-  if(el.id==="affCurrent2")$("affCurrent").value=el.value;
-  if(el.id==="affTarget2")$("affTarget").value=el.value;
-  if(el.id==="houseGoal2")$("houseGoal").value=el.value;
+  if(el.id==="affCurrent2")$("affCurrent").value=formatThousands(el.value);
+  if(el.id==="affTarget2")$("affTarget").value=formatThousands(el.value);
+  if(el.id==="houseGoal2")$("houseGoal").value=formatThousands(el.value);
   if(el.id==="houseYears2")$("houseYears").value=el.value;
   update();
 }));
@@ -480,8 +951,9 @@ function renderLogs(){
 }
 $("addLog").onclick=()=>{
   let date=$("logDate").value||new Date().toISOString().slice(0,10);
-  logs.push({date,content:+$("logContent").value||0,aff:+$("logAff").value||0,orders:+$("logOrders").value||0,rev:+$("logRev").value||0,profit:+$("logProfit").value||0});
-  logs.sort((a,b)=>a.date.localeCompare(b.date)); localStorage.setItem("tmv2_logs",JSON.stringify(logs)); renderLogs(); redraw();
+  logs.push({date,content:parseNum($("logContent").value),aff:parseNum($("logAff").value),orders:parseNum($("logOrders").value),rev:parseNum($("logRev").value),profit:parseNum($("logProfit").value)});
+  logs.sort((a,b)=>a.date.localeCompare(b.date)); localStorage.setItem("tmv2_logs",JSON.stringify(logs));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos)); renderLogs(); redraw();
 };
 $("clearLogs").onclick=()=>{if(confirm("Xóa toàn bộ nhật ký?")){logs=[];localStorage.setItem("tmv2_logs","[]");renderLogs();redraw()}};
 
@@ -497,31 +969,134 @@ function loadBoard(){let o=JSON.parse(localStorage.getItem("tmv2_board")||"null"
 
 $("exportBtn").onclick=()=>{
   saveAll();
-  const data={version:2,settings:Object.fromEntries(ids.map(id=>[id,$(id).value])),logs,checks:Object.fromEntries([...document.querySelectorAll("[data-check]")].map(x=>[x.dataset.check,x.checked])),board:JSON.parse(localStorage.getItem("tmv2_board")||"{}")};
+  const data={version:3.2,settings:Object.fromEntries(ids.map(id=>[id,$(id).value])),logs,tiktokVideos,checks:Object.fromEntries([...document.querySelectorAll("[data-check]")].map(x=>[x.dataset.check,x.checked])),board:JSON.parse(localStorage.getItem("tmv2_board")||"{}")};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");
   a.href=URL.createObjectURL(blob);a.download="tien-mo-dashboard-backup.json";a.click();URL.revokeObjectURL(a.href);
 };
 $("importInput").onchange=e=>{
-  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k))$(k).value=v;localStorage.setItem("tmv2_"+k,v)});logs=d.logs||[];localStorage.setItem("tmv2_logs",JSON.stringify(logs));if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));loadChecks();loadBoard();update();alert("Đã nhập backup.")}catch{alert("File backup không hợp lệ.")}};r.readAsText(f)
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k))$(k).value=groupedNumberIds.includes(k)?formatThousands(v):v;localStorage.setItem("tmv2_"+k,v)});logs=d.logs||[];localStorage.setItem("tmv2_logs",JSON.stringify(logs));tiktokVideos=d.tiktokVideos||[];localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));loadChecks();loadBoard();update();alert("Đã nhập backup.")}catch{alert("File backup không hợp lệ.")}};r.readAsText(f)
 };
 
+
+
+async function affiliateApi(action){
+  const url=$("cloudUrl").value.trim(), secret=$("cloudSecret").value.trim();
+  if(!url) throw new Error("Chưa cấu hình Cloud Sync URL");
+  if(!secret) throw new Error("Chưa cấu hình Secret");
+  const u=new URL(url);
+  u.searchParams.set("action",action);
+  u.searchParams.set("secret",secret);
+  const r=await fetch(u.toString(),{method:"GET",cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  if(!d.ok) throw new Error(d.error||"API error");
+  return d;
+}
+function renderWeeklyMonthly(rows){
+  const tb=$("weeklyMonthlyTable");
+  tb.innerHTML="";
+  (rows||[]).forEach(x=>{
+    tb.innerHTML+=`<tr>
+      <td>${x.month||""}</td>
+      <td>${formatThousands(x.clicksShopee||0)}</td>
+      <td>${formatThousands(x.shopeeOrderLines||0)}</td>
+      <td>${formatThousands(x.shopeeCompletedLines||0)}</td>
+      <td>${formatThousands(x.tiktokOrderLines||0)}</td>
+      <td>${formatThousands(x.tiktokSettledLines||0)}</td>
+      <td>${formatThousands(x.shopeeCommissionCompletedMonth||0)}</td>
+      <td>${formatThousands(x.tiktokCommissionSettledMonth||0)}</td>
+      <td><strong>${formatThousands(x.recognizedCommission||0)}</strong></td>
+    </tr>`;
+  });
+  const nonzero=(rows||[]).filter(x=>(x.clicksShopee||0)||(x.shopeeOrderLines||0)||(x.tiktokOrderLines||0)||(x.recognizedCommission||0));
+  const latest=nonzero.length?nonzero[nonzero.length-1]:null;
+  if(latest){
+    $("wkRecognized").textContent=fmt(latest.recognizedCommission||0);
+    $("wkShopeeCompleted").textContent=formatThousands(latest.shopeeCompletedLines||0);
+    $("wkTikTokSettled").textContent=formatThousands(latest.tiktokSettledLines||0);
+    $("wkClicks").textContent=formatThousands(latest.clicksShopee||0);
+  }
+  drawLine($("weeklyCommissionChart"),
+    (rows||[]).map(x=>(x.month||"").slice(5)),
+    [{data:(rows||[]).map(x=>x.recognizedCommission||0),color:"#3ddc97"}]
+  );
+}
+function renderWeeklyTop(rows){
+  const tb=$("weeklyTikTokTop"); tb.innerHTML="";
+  (rows||[]).slice(0,20).forEach(x=>{
+    const cpo=(x.distinctOrders||0)>0?(x.netCommission||0)/(x.distinctOrders||1):0;
+    tb.innerHTML+=`<tr>
+      <td>${x.contentId||""}</td>
+      <td>${(x.topProduct||"").slice(0,72)}</td>
+      <td>${formatThousands(x.orderLines||0)}</td>
+      <td>${formatThousands(x.distinctOrders||0)}</td>
+      <td>${formatThousands(x.settledLines||0)}</td>
+      <td>${formatThousands(x.gmv||0)}</td>
+      <td><strong>${formatThousands(x.netCommission||0)}</strong></td>
+      <td>${formatThousands(Math.round(cpo))}</td>
+    </tr>`;
+  });
+}
+async function syncWeeklyReports(){
+  $("weeklyStatus").textContent="Đang tải...";
+  $("weeklyDot").classList.remove("ok");
+  try{
+    const [monthly,top,coverage]=await Promise.all([
+      affiliateApi("affiliate_monthly"),
+      affiliateApi("tiktok_top"),
+      affiliateApi("affiliate_coverage")
+    ]);
+    weeklyAffiliateData={monthly:monthly.rows||[],top:top.rows||[],coverage:coverage.coverage||{}};
+    localStorage.setItem("tmv3_weeklyAffiliateData",JSON.stringify(weeklyAffiliateData));
+    renderWeeklyMonthly(weeklyAffiliateData.monthly);
+    renderWeeklyTop(weeklyAffiliateData.top);
+    const c=weeklyAffiliateData.coverage;
+    $("wkClicksCoverage").textContent=c.clicks||"—";
+    $("wkShopeeCoverage").textContent=c.shopee||"—";
+    $("wkTikTokCoverage").textContent=c.tiktok||"—";
+    $("weeklyStatus").textContent="Đã đồng bộ "+new Date().toLocaleTimeString("vi-VN");
+    $("weeklyDot").classList.add("ok");
+  }catch(e){
+    $("weeklyStatus").textContent="Lỗi: "+e.message;
+  }
+}
+$("weeklySyncBtn").onclick=syncWeeklyReports;
+function loadWeeklyCache(){
+  try{
+    weeklyAffiliateData=JSON.parse(localStorage.getItem("tmv3_weeklyAffiliateData")||"null");
+    if(weeklyAffiliateData){
+      renderWeeklyMonthly(weeklyAffiliateData.monthly||[]);
+      renderWeeklyTop(weeklyAffiliateData.top||[]);
+      const c=weeklyAffiliateData.coverage||{};
+      $("wkClicksCoverage").textContent=c.clicks||"—";
+      $("wkShopeeCoverage").textContent=c.shopee||"—";
+      $("wkTikTokCoverage").textContent=c.tiktok||"—";
+      $("weeklyStatus").textContent="Đang hiển thị dữ liệu cache";
+    }
+  }catch(e){}
+}
 
 function buildCloudState(){
   saveAll();
   return {
     version:3,
     updatedAt:new Date().toISOString(),
-    settings:Object.fromEntries(ids.filter(id=>!["cloudUrl","cloudSecret"].includes(id)).map(id=>[id,$(id).value])),
+    settings:Object.fromEntries(ids.filter(id=>!["cloudUrl","cloudSecret"].includes(id)).map(id=>[id,groupedNumberIds.includes(id)?String(parseNum($(id).value)):$(id).value])),
     logs,
+    tiktokVideos,
     checks:Object.fromEntries([...document.querySelectorAll("[data-check]")].map(x=>[x.dataset.check,x.checked])),
     board:JSON.parse(localStorage.getItem("tmv2_board")||"{}")
   };
 }
 function applyCloudState(d){
   if(!d) throw new Error("Cloud data trống");
-  Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k)){$(k).value=v;localStorage.setItem("tmv2_"+k,v)}});
+  Object.entries(d.settings||{}).forEach(([k,v])=>{if($(k)){$(k).value=groupedNumberIds.includes(k)?formatThousands(v):v;localStorage.setItem("tmv2_"+k,v)}});
   logs=d.logs||[];
+  tiktokVideos=d.tiktokVideos||[];
   localStorage.setItem("tmv2_logs",JSON.stringify(logs));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
   if(d.board)localStorage.setItem("tmv2_board",JSON.stringify(d.board));
   Object.entries(d.checks||{}).forEach(([k,v])=>localStorage.setItem("tmv2_check_"+k,v?"1":"0"));
   loadChecks(); loadBoard(); update();
@@ -582,9 +1157,100 @@ $("cloudLoadBtn").onclick=async()=>{
 };
 $("cloudStatusBtn").onclick=()=>document.querySelector('[data-page="cloud"]').click();
 
+
+function ttNum(id){ return parseNum($(id).value); }
+function ttScore(v){
+  const cpm = v.views>0 ? (v.commission/v.views*1000) : 0;
+  if(cpm>=50000) return {label:"Winner",cls:"winner"};
+  if(cpm>=20000) return {label:"Good",cls:"good"};
+  if(cpm>=5000) return {label:"Test thêm",cls:"test"};
+  return {label:"Yếu",cls:"bad"};
+}
+function renderTikTok(){
+  const body=$("ttTable");
+  if(!body) return;
+  body.innerHTML="";
+  let totalViews=0,totalOrders=0,totalCommission=0;
+  tiktokVideos.forEach((v,idx)=>{
+    totalViews+=v.views||0; totalOrders+=v.orders||0; totalCommission+=v.commission||0;
+    const cpm=v.views>0?v.commission/v.views*1000:0;
+    const ctr=v.views>0?v.clicks/v.views*100:0;
+    const cvr=v.clicks>0?v.orders/v.clicks*100:0;
+    const er=v.views>0?(v.likes+v.comments+v.shares)/v.views*100:0;
+    const sc=ttScore(v);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${v.date||""}</td>
+      <td>${v.url?`<a href="${v.url}" target="_blank" style="color:#9ccfff">${v.product||"Video"}</a>`:(v.product||"")}</td>
+      <td>${v.hook||""}</td>
+      <td>${formatThousands(v.views)}</td>
+      <td>${formatThousands(v.clicks)}</td>
+      <td>${formatThousands(v.orders)}</td>
+      <td>${formatThousands(v.commission)}</td>
+      <td><strong>${formatThousands(Math.round(cpm))}</strong></td>
+      <td>${ctr.toFixed(2)}%</td>
+      <td>${cvr.toFixed(2)}%</td>
+      <td>${er.toFixed(2)}%</td>
+      <td><span class="${sc.cls}">${sc.label}</span></td>
+      <td><button class="btn" onclick="deleteTikTok(${idx})">Xóa</button></td>`;
+    body.appendChild(tr);
+  });
+  $("ttTotalVideos").textContent=tiktokVideos.length;
+  $("ttTotalCommission").textContent=fmt(totalCommission);
+  $("ttAvgCPM").textContent=fmt(totalViews>0?totalCommission/totalViews*1000:0);
+  $("ttOrdersPer1K").textContent=(totalViews>0?totalOrders/totalViews*1000:0).toFixed(2);
+  drawTikTokChart();
+}
+function drawTikTokChart(){
+  if(!$("ttChart")) return;
+  const sorted=[...tiktokVideos].sort((a,b)=>(b.commission/(b.views||1))-(a.commission/(a.views||1))).slice(0,8);
+  const labels=sorted.map((v,i)=>v.product?`${i+1}. ${v.product.slice(0,12)}`:`Video ${i+1}`);
+  const data=sorted.map(v=>v.views>0?v.commission/v.views*1000:0);
+  drawLine($("ttChart"),labels.length?labels:["—"],[{data:data.length?data:[0],color:"#3ddc97"}]);
+}
+function deleteTikTok(i){
+  if(!confirm("Xóa video này khỏi tracker?")) return;
+  tiktokVideos.splice(i,1);
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
+  renderTikTok();
+}
+$("ttAddBtn").onclick=()=>{
+  tiktokVideos.push({
+    date:$("ttDate").value||new Date().toISOString().slice(0,10),
+    product:$("ttProduct").value.trim(),
+    hook:$("ttHook").value.trim(),
+    url:$("ttUrl").value.trim(),
+    views:ttNum("ttViews"), likes:ttNum("ttLikes"), comments:ttNum("ttComments"), shares:ttNum("ttShares"),
+    clicks:ttNum("ttClicks"), orders:ttNum("ttOrders"), revenue:ttNum("ttRevenue"), commission:ttNum("ttCommission"),
+    watch:parseFloat($("ttWatch").value)||0, fullWatch:parseFloat($("ttFullWatch").value)||0, note:$("ttNote").value.trim()
+  });
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
+  ["ttProduct","ttHook","ttUrl","ttNote"].forEach(id=>$(id).value="");
+  ["ttViews","ttLikes","ttComments","ttShares","ttClicks","ttOrders","ttRevenue","ttCommission"].forEach(id=>$(id).value="0");
+  $("ttWatch").value="0"; $("ttFullWatch").value="0";
+  renderTikTok();
+  saveAll();
+};
+$("ttSortBtn").onclick=()=>{
+  tiktokVideos.sort((a,b)=>((b.commission/(b.views||1))- (a.commission/(a.views||1))));
+  localStorage.setItem("tmv2_tiktokVideos",JSON.stringify(tiktokVideos));
+  renderTikTok();
+};
+$("ttClearBtn").onclick=()=>{
+  if(confirm("Xóa toàn bộ dữ liệu TikTok Tracker?")){
+    tiktokVideos=[];
+    localStorage.setItem("tmv2_tiktokVideos","[]");
+    renderTikTok();
+  }
+};
+
 loadAll();
+applyGroupedInputFormatting();
 $("logDate").value=new Date().toISOString().slice(0,10);
+if($("ttDate")) $("ttDate").value=new Date().toISOString().slice(0,10);
 update();
+renderTikTok();
+loadWeeklyCache();
 if($("cloudUrl").value.trim() && $("cloudSecret").value.trim()) setCloudMessage("Đã có cấu hình Cloud. Bấm “Kiểm tra kết nối”.",false);
 </script>
 </body>
